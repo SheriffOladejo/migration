@@ -153,4 +153,4 @@ def migrateUserDetails(user_list):
         last_id = user.user_id
     fetchUsers(last_id)
 
-fetchUsers(48691)
+fetchUsers(60047)
