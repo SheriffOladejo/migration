@@ -11,6 +11,7 @@ class Post:
             postFile,
             postFileName,
             postType,
+            originalPostType,
             time,
             registered,
     ):
@@ -20,6 +21,7 @@ class Post:
         self.postFile = postFile
         self.postFileName = postFileName
         self.postType = postType
+        self.originalPostType = originalPostType
         self.time = time
         self.registered = registered
 
@@ -43,13 +45,11 @@ def connect2_0():
     return database
 
 def getPostData(id):
-    post_list = []
-
     database = connect1_0()
     cursor = database.cursor()
     cursor.execute("select * from engine4_activity_actions where action_id > " + str(
-        id) + " and subject_id = 2 and (type = 'post' or type = 'cover_photo_update' or "
-                   "type = 'profile_photo_update' or type = 'post_self_photo')")
+        id) + " and (type = 'post' or type = 'cover_photo_update' or "
+                   "type = 'profile_photo_update' or type = 'post_self_photo' or type = 'post_self') limit 5000")
     result = cursor.fetchall()
 
     last_id = 0
@@ -58,6 +58,7 @@ def getPostData(id):
         action_id = row[0]
         last_id = action_id
         postType = row[1]
+        originalPostType = postType
         userID = row[3]
         recipientID = 0
         postText = row[6]
@@ -66,7 +67,6 @@ def getPostData(id):
         postFileName = ""
         registered = "0/0000"
 
-
         if postType == 'post':
             postType = 'post'
         elif postType == 'cover_photo_update':
@@ -74,6 +74,8 @@ def getPostData(id):
         elif postType == 'profile_photo_update':
             postType = 'profile_picture'
         elif postType == 'post_self_photo':
+            postType = 'post'
+        elif postType == 'post_self':
             postType = 'post'
 
         cursor.execute("select * from engine4_activity_attachments where action_id = " + str(action_id))
@@ -97,6 +99,7 @@ def getPostData(id):
         post = Post(
             userId=userID,
             postType=str(postType),
+            originalPostType=str(originalPostType),
             postFile=str(postFile),
             postFileName=str(postFileName),
             recipientID=recipientID,
@@ -113,12 +116,11 @@ def getPostData(id):
         _cursor.execute(_get_registered_query, _values)
         _result = _cursor.fetchall()
         for _row in _result:
-            print(str(_row[0]))
             post.registered = str(_row[0])
 
         query = """insert into Wo_Posts (user_id, postType, postFile, postFileName, 
-        recipient_id, postText, time, registered, postLinkTitle, postLinkContent, postPrivacy) values (%s, %s, %s, %s,
-         %s, %s, %s, %s, %s, %s, %s)"""
+        recipient_id, postText, time, registered, postLinkTitle, postLinkContent, postPrivacy, originalPostType) values (%s, %s, %s, %s,
+         %s, %s, %s, %s, %s, %s, %s, %s)"""
         values = [
             post.userID,
             post.postType,
@@ -130,7 +132,8 @@ def getPostData(id):
             post.registered,
             '',
             '',
-            '0'
+            '0',
+            post.originalPostType,
         ]
         cursor3 = database2.cursor()
 
@@ -151,9 +154,7 @@ def getPostData(id):
             cursor3.execute(update_query)
             database2.commit()
 
-        print("Last ID: "+str(post.userID))
+        print("Last actionID: "+str(last_id))
+    getPostData(last_id)
 
-    #getPostData(last_id)
-
-
-getPostData(0)
+getPostData(54)
