@@ -28,11 +28,11 @@ class Post:
 
 def connect1_0():
     database = mysql.connector.connect(
-        host='31.172.80.88',
+        host='79.133.41.206',
         port='3306',
-        user='sql_melanatedpeo',
-        passwd='PRGGzZCzWRb4MNKC',
-        database='sql_melanatedpeo')
+        user='admin_melanatedpeo',
+        passwd='bf73jg0wufm0gs',
+        database='admin_melanatedpeo')
     return database
 
 
@@ -157,4 +157,4 @@ def getPostData(id):
         print("Last actionID: "+str(last_id))
     getPostData(last_id)
 
-getPostData(24620)
+getPostData(55672)
