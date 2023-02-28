@@ -157,4 +157,4 @@ def getPostData(id):
         print("Last actionID: "+str(last_id))
     getPostData(last_id)
 
-getPostData(417000)
+getPostData(3518864)
