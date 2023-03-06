@@ -59,8 +59,7 @@ def getPostData(id):
     database = connect1_0()
     cursor = database.cursor()
     cursor.execute("select * from engine4_activity_actions where action_id > " + str(
-        id) + " and Date(date) > '2022-01-01 00:00:00' and (type = 'post' or type = 'cover_photo_update' or "
-              "type = 'profile_photo_update' or type = 'post_self_photo' or type = 'post_self') limit 5000")
+        id) + " and Date(date) > '2022-01-01 00:00:00' and (type = 'post' or type = 'post_self_photo' or type = 'post_self') limit 5000")
     result = cursor.fetchall()
 
     last_id = 0
