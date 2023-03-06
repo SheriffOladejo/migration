@@ -2,6 +2,7 @@ import mysql.connector
 import time
 import datetime
 
+
 class Post:
     def __init__(
             self,
@@ -44,12 +45,22 @@ def connect2_0():
         passwd='irNdhZkzu8AU')
     return database
 
+
+def connect3_0():
+    database = mysql.connector.connect(
+        host='database-1.c6ck11qdk7qi.us-east-1.rds.amazonaws.com',
+        user='admin',
+        database='database-1',
+        passwd='qwertyuiop')
+    return database
+
+
 def getPostData(id):
     database = connect1_0()
     cursor = database.cursor()
     cursor.execute("select * from engine4_activity_actions where action_id > " + str(
         id) + " and Date(date) > '2022-01-01 00:00:00' and (type = 'post' or type = 'cover_photo_update' or "
-                   "type = 'profile_photo_update' or type = 'post_self_photo' or type = 'post_self') limit 5000")
+              "type = 'profile_photo_update' or type = 'post_self_photo' or type = 'post_self') limit 5000")
     result = cursor.fetchall()
 
     last_id = 0
@@ -69,10 +80,10 @@ def getPostData(id):
 
         if postType == 'post':
             postType = 'post'
-        elif postType == 'cover_photo_update':
-            postType = 'profile_cover_picture'
-        elif postType == 'profile_photo_update':
-            postType = 'profile_picture'
+        # elif postType == 'cover_photo_update':
+        #     postType = 'profile_cover_picture'
+        # elif postType == 'profile_photo_update':
+        #     postType = 'profile_picture'
         elif postType == 'post_self_photo':
             postType = 'post'
         elif postType == 'post_self':
@@ -154,7 +165,9 @@ def getPostData(id):
             cursor3.execute(update_query)
             database2.commit()
 
-        print("Last actionID: "+str(last_id))
+        print("Last actionID: " + str(last_id))
     getPostData(last_id)
 
-getPostData(3610047)
+
+#connect3_0()
+getPostData(0)
