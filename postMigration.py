@@ -169,4 +169,4 @@ def getPostData(id):
 
 
 #connect3_0()
-getPostData(3642730)
+getPostData(3689793)
