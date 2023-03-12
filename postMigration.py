@@ -149,7 +149,6 @@ def getPostData(id):
             '0',
             post.originalPostType,
         ]
-        print(str(values))
         cursor3 = database2.cursor()
 
         if post.postType == 'profile_picture':
@@ -174,4 +173,4 @@ def getPostData(id):
 
 
 #connect3_0()
-getPostData(3801469)
+getPostData(3518864)
