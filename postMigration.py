@@ -6,6 +6,7 @@ import datetime
 class Post:
     def __init__(
             self,
+            actionId,
             userId,
             recipientID,
             postText,
@@ -16,6 +17,7 @@ class Post:
             time,
             registered,
     ):
+        self.actionId = actionId
         self.userID = userId
         self.recipientID = recipientID
         self.postText = postText
@@ -107,6 +109,7 @@ def getPostData(id):
             text = text[2:-1]
 
         post = Post(
+            actionId=action_id,
             userId=userID,
             postType=str(postType),
             originalPostType=str(originalPostType),
@@ -128,11 +131,12 @@ def getPostData(id):
         for _row in _result:
             post.registered = str(_row[0])
 
-        query = """insert into Wo_Posts (user_id, postType, postFile, postFileName, 
-        recipient_id, postText, time, registered, postLinkTitle, postLinkContent, postPrivacy, originalPostType) values (%s, %s, %s, %s,
+        query = """insert into Wo_Posts (user_id, action_id, postType, postFile, postFileName, 
+        recipient_id, postText, time, registered, postLinkTitle, postLinkContent, postPrivacy, originalPostType) values (%s, %s, %s, %s, %s,
          %s, %s, %s, %s, %s, %s, %s, %s)"""
         values = [
             post.userID,
+            post.actionId,
             post.postType,
             post.postFile,
             post.postFileName,
@@ -145,6 +149,7 @@ def getPostData(id):
             '0',
             post.originalPostType,
         ]
+        print(str(values))
         cursor3 = database2.cursor()
 
         if post.postType == 'profile_picture':
@@ -169,4 +174,4 @@ def getPostData(id):
 
 
 #connect3_0()
-getPostData(3800800)
+getPostData(3801469)
