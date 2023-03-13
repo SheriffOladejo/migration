@@ -27,7 +27,7 @@ class User:
         self.country = country
         
 
-last_id = 5
+last_id = 4
 
 def migrateUsers():
     user_list = []
