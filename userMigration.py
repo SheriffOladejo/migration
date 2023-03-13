@@ -27,17 +27,17 @@ class User:
         self.country = country
         
 
-last_id = 136743
+last_id = 4
 
 def migrateUsers():
     user_list = []
 
     database = mysql.connector.connect(
-        host = '31.172.80.88',
-        port = '3306',
-        user = 'sql_melanatedpeo',
-        passwd = 'PRGGzZCzWRb4MNKC',
-        database = 'sql_melanatedpeo')
+        host='79.133.41.206',
+        port='3306',
+        user='admin_melanatedpeo',
+        passwd='bf73jg0wufm0gs',
+        database='admin_melanatedpeo')
 
     cursor = database.cursor()
     cursor.execute("select * from engine4_users where user_id > " + str(last_id))
@@ -95,10 +95,10 @@ def migrateUsers():
             break
 
     database2 = mysql.connector.connect(
-        host = '79.133.41.206',
-        user = 'admin_5HXPW',
-        database = 'admin_5HXPW',
-        passwd = 'HPcrb3VbrylD')
+        host='79.133.41.206',
+        user='admin_l5ERv',
+        database='admin_l5ERv',
+        passwd='irNdhZkzu8AU')
 
     for user in user_list:
         cursor = database2.cursor()
