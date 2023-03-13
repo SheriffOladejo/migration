@@ -44,11 +44,12 @@ def migrateUsers():
     result = cursor.fetchall()
     for row in result:
         user_id = row[0]
+        email = row[1]
         username = row[2]
+        if username is None:
+            username = email
         location = row[33]
         password = row[7]
-        
-        email = row[1]
         displayname = row[3]
         name_list = displayname.split(' ')
         firstname = ''
