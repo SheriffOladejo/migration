@@ -25,11 +25,9 @@ class User:
         self.city = city
         self.state = state
         self.country = country
-        
 
-last_id = 4
 
-def migrateUsers():
+def migrateUsers(last_id):
     user_list = []
 
     database = mysql.connector.connect(
@@ -40,10 +38,11 @@ def migrateUsers():
         database='admin_melanatedpeo')
 
     cursor = database.cursor()
-    cursor.execute("select * from engine4_users where user_id > " + str(last_id))
+    cursor.execute("select * from engine4_users where user_id > " + str(last_id) + " limit 5000")
     result = cursor.fetchall()
     for row in result:
         user_id = row[0]
+        last_id = user_id
         email = row[1]
         username = row[2]
         if username is None:
@@ -117,8 +116,9 @@ def migrateUsers():
             ]
         cursor.execute(query, values)
         database2.commit()
-        print("Last id updated: " + str(user.user_id))
+    print("Last id updated: " + str(user.user_id))
+    migrateUsers(last_id)
 
-migrateUsers()
+migrateUsers(4)
         
     
