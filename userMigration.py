@@ -119,6 +119,6 @@ def migrateUsers(last_id):
     print("Last id updated: " + str(user.user_id))
     migrateUsers(last_id)
 
-migrateUsers(4)
+migrateUsers(0)
         
     
