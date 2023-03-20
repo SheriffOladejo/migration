@@ -57,14 +57,24 @@ def connect3_0():
     return database
 
 
-def getPostData(id):
+def getPostData():
+    last_id = 0
+
+    db2 = connect2_0()
+    cu = db2.cursor()
+    v = [str(1)]
+    cu.execute("select action_id from Wo_Posts order by action_id desc limit 1")
+    ids = cu.fetchall()
+    for id in ids:
+        last_id = id[0]
+    print("last id is: " + str(last_id))
+
+
     database = connect1_0()
     cursor = database.cursor()
     cursor.execute("select * from engine4_activity_actions where action_id > " + str(
-        id) + " and Date(date) > '2022-01-01 00:00:00' and (type = 'post' or type = 'post_self_photo' or type = 'post_self') limit 5000")
+        last_id) + " and Date(date) > '2022-01-01 00:00:00' and (type = 'post' or type = 'post_self_photo' or type = 'post_self') limit 5000")
     result = cursor.fetchall()
-
-    last_id = 0
 
     for row in result:
         action_id = row[0]
@@ -72,7 +82,7 @@ def getPostData(id):
         postType = row[1]
         originalPostType = postType
         userID = row[3]
-        recipientID = 0
+        recipientID = row[5]
         postText = row[6]
         creationDate = time.mktime(datetime.datetime.strptime(str(row[8]), "%Y-%m-%d %H:%M:%S").timetuple())
         postFile = ""
@@ -169,8 +179,7 @@ def getPostData(id):
             database2.commit()
 
         print("Last actionID: " + str(last_id))
-    getPostData(last_id)
 
 
 #connect3_0()
-getPostData(3800861)
+getPostData()
