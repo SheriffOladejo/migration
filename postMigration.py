@@ -181,6 +181,4 @@ def getPostData():
 
         print("Last actionID: " + str(last_id))
 
-
-#connect3_0()
 getPostData()
