@@ -84,7 +84,8 @@ def getPostData():
         userID = row[3]
         recipientID = row[5]
         postText = str(row[6])
-        postText.replace("\n", "<br>")
+        s = postText.replace('\\n', '<br>')
+        print(s)
         creationDate = time.mktime(datetime.datetime.strptime(str(row[8]), "%Y-%m-%d %H:%M:%S").timetuple())
         postFile = ""
         postFileName = ""
@@ -145,6 +146,7 @@ def getPostData():
         query = """insert into Wo_Posts (user_id, action_id, postType, postFile, postFileName, 
         recipient_id, postText, time, registered, postLinkTitle, postLinkContent, postPrivacy, originalPostType) values (%s, %s, %s, %s, %s,
          %s, %s, %s, %s, %s, %s, %s, %s)"""
+
         values = [
             post.userID,
             post.actionId,
