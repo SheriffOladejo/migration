@@ -83,7 +83,8 @@ def getPostData():
         originalPostType = postType
         userID = row[3]
         recipientID = row[5]
-        postText = row[6]
+        postText = str(row[6])
+        postText.replace("\n", "<br>")
         creationDate = time.mktime(datetime.datetime.strptime(str(row[8]), "%Y-%m-%d %H:%M:%S").timetuple())
         postFile = ""
         postFileName = ""
