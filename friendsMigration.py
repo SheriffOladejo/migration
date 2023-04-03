@@ -38,7 +38,7 @@ def getData():
     database = connect1_0()
     cursor = database.cursor()
 
-    cursor.execute("select * from engine4_users where user_id > " + str(last_id))
+    cursor.execute("select * from engine4_users where user_id > " + str(last_id) + " limit 5000")
     users = cursor.fetchall()
 
     for user in users:
