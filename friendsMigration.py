@@ -1,3 +1,5 @@
+from time import time
+
 import mysql.connector
 import requests
 import json
@@ -27,7 +29,6 @@ def getData():
 
     db2 = connect2_0()
     cu = db2.cursor()
-    v = [str(1)]
     cu.execute("select user_id from Wo_Users where friends_copied = 1 order by user_id desc limit 1")
     ids = cu.fetchall()
     for id in ids:
@@ -37,7 +38,7 @@ def getData():
     database = connect1_0()
     cursor = database.cursor()
 
-    cursor.execute("select * from engine4_users where user_id > " + str(last_id) + " limit 5000")
+    cursor.execute("select * from engine4_users where user_id > " + str(last_id))
     users = cursor.fetchall()
 
     for user in users:
@@ -75,10 +76,68 @@ def getData():
             database2.commit()
 
 
-def getFollowers(id):
+def updateWoFollowerActivities(user_id, followers):
+    database = connect2_0()
+    cursor = database.cursor()
+    for follower_id in followers:
+        values = [str(follower_id), str(user_id), 'following', str(time())]
+        cursor.execute(
+            """insert into Wo_Activities (user_id, follow_id, activity_type, time) values (%s, %s, %s, %s)""",
+            values)
+        database.commit()
+
+
+def updateWoFollowingActivities(user_id, followings):
+    database = connect2_0()
+    cursor = database.cursor()
+    for following_id in followings:
+        values = [str(user_id), str(following_id), 'following', str(time())]
+        cursor.execute(
+            """insert into Wo_Activities (user_id, follow_id, activity_type, time) values (%s, %s, %s, %s)""",
+            values)
+        database.commit()
+
+
+def updateWoFollowers(user_id, followers):
+    database = connect2_0()
+    cursor = database.cursor()
+    for follower_id in followers:
+        values = [str(user_id), str(follower_id), '1']
+        cursor.execute("""insert into Wo_Followers (following_id, follower_id, active) values (%s, %s, %s)""", values)
+        database.commit()
+
+
+def updateWoFollowings(user_id, followings):
+    database = connect2_0()
+    cursor = database.cursor()
+    for following_id in followings:
+        values = [str(following_id), str(user_id), '1']
+        cursor.execute("""insert into Wo_Followers (following_id, follower_id, active) values (%s, %s, %s)""", values)
+        database.commit()
+
+
+def getFollowing(user_id):
     database = connect1_0()
     cursor = database.cursor()
-    cursor.execute("select * from engine4_activity_actions where object_id = " + str(id) + " and type = 'friends'")
+    cursor.execute(
+        "select * from engine4_activity_actions where subject_id = " + str(user_id) + " and type = 'friends'")
+    result = cursor.fetchall()
+
+    following = []
+
+    for row in result:
+        object_id = row[5]
+        following.append(str(object_id))
+    updateWoFollowings(user_id, following)
+    updateWoFollowingActivities(user_id, following)
+
+    return following
+
+
+def getFollowers(user_id):
+    database = connect1_0()
+    cursor = database.cursor()
+    cursor.execute("select * from engine4_activity_actions where object_id = " + str(user_id) + " and type = 'friends'")
     result = cursor.fetchall()
 
     followers = []
@@ -87,22 +146,10 @@ def getFollowers(id):
         subject_id = row[3]
         followers.append(str(subject_id))
 
+    updateWoFollowers(user_id, followers)
+    updateWoFollowerActivities(user_id, followers)
+
     return followers
-
-
-def getFollowing(id):
-    database = connect1_0()
-    cursor = database.cursor()
-    cursor.execute("select * from engine4_activity_actions where subject_id = " + str(id) + " and type = 'friends'")
-    result = cursor.fetchall()
-
-    following = []
-
-    for row in result:
-        object_id = row[5]
-        following.append(str(object_id))
-
-    return following
 
 
 getData()

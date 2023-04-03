@@ -38,7 +38,7 @@ def migrateUsers(last_id):
         database='admin_melanatedpeo')
 
     cursor = database.cursor()
-    cursor.execute("select * from engine4_users where user_id > " + str(last_id) + " limit 5000")
+    cursor.execute("select * from engine4_users where user_id = 2")
     result = cursor.fetchall()
     for row in result:
         user_id = row[0]
