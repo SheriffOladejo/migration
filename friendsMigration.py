@@ -184,8 +184,9 @@ def getFollowing(user_id):
     for row in result:
         object_id = row[5]
         following.append(str(object_id))
-    updateWoFollowingActivities(user_id, following)
+
     updateWoFollowings(user_id, following)
+    updateWoFollowingActivities(user_id, following)
 
     return following
 
@@ -202,8 +203,8 @@ def getFollowers(user_id):
         subject_id = row[3]
         followers.append(str(subject_id))
 
-    updateWoFollowerActivities(user_id, followers)
     updateWoFollowers(user_id, followers)
+    updateWoFollowerActivities(user_id, followers)
 
     return followers
 
