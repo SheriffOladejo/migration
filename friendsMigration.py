@@ -79,41 +79,97 @@ def getData():
 def updateWoFollowerActivities(user_id, followers):
     database = connect2_0()
     cursor = database.cursor()
-    for follower_id in followers:
-        values = [str(follower_id), str(user_id), 'following', str(time())]
-        cursor.execute(
-            """insert into Wo_Activities (user_id, follow_id, activity_type, time) values (%s, %s, %s, %s)""",
-            values)
-        database.commit()
+    cursor.execute("select * from `Wo_Activities` where follow_id = " + str(user_id) + " order by id desc limit 1")
+    result = cursor.fetchall()
+    last_follower_id = 0
+    for row in result:
+        last_follower_id = row[1]
+    if last_follower_id != 0:
+        index = followers.index(str(last_follower_id))
+        for follower_id in followers[index + 1:]:
+            values = [str(follower_id), str(user_id), 'following', str(time())]
+            cursor.execute(
+                """insert into Wo_Activities (user_id, follow_id, activity_type, time) values (%s, %s, %s, %s)""",
+                values)
+            database.commit()
+    else:
+        for follower_id in followers:
+            values = [str(follower_id), str(user_id), 'following', str(time())]
+            cursor.execute(
+                """insert into Wo_Activities (user_id, follow_id, activity_type, time) values (%s, %s, %s, %s)""",
+                values)
+            database.commit()
 
 
 def updateWoFollowingActivities(user_id, followings):
     database = connect2_0()
     cursor = database.cursor()
-    for following_id in followings:
-        values = [str(user_id), str(following_id), 'following', str(time())]
-        cursor.execute(
-            """insert into Wo_Activities (user_id, follow_id, activity_type, time) values (%s, %s, %s, %s)""",
-            values)
-        database.commit()
+    cursor.execute("select * from `Wo_Activities` where user_id = " + str(user_id) + " order by id desc limit 1")
+    result = cursor.fetchall()
+    last_follow_id = 0
+    for row in result:
+        last_follow_id = row[5]
+    if last_follow_id != 0:
+        index = followings.index(str(last_follow_id))
+        for following_id in followings[index + 1:]:
+            values = [str(user_id), str(following_id), 'following', str(time())]
+            cursor.execute(
+                """insert into Wo_Activities (user_id, follow_id, activity_type, time) values (%s, %s, %s, %s)""",
+                values)
+            database.commit()
+    else:
+        for following_id in followings:
+            values = [str(user_id), str(following_id), 'following', str(time())]
+            cursor.execute(
+                """insert into Wo_Activities (user_id, follow_id, activity_type, time) values (%s, %s, %s, %s)""",
+                values)
+            database.commit()
 
 
 def updateWoFollowers(user_id, followers):
     database = connect2_0()
     cursor = database.cursor()
-    for follower_id in followers:
-        values = [str(user_id), str(follower_id), '1']
-        cursor.execute("""insert into Wo_Followers (following_id, follower_id, active) values (%s, %s, %s)""", values)
-        database.commit()
+    cursor.execute("select * from `Wo_Followers` where following_id = " + str(user_id) + " order by id desc limit 1")
+    result = cursor.fetchall()
+    last_follower_id = 0
+    for row in result:
+        last_follower_id = row[2]
+    if last_follower_id != 0:
+        index = followers.index(str(last_follower_id))
+        for follower_id in followers[index + 1:]:
+            values = [str(user_id), str(follower_id), '1']
+            cursor.execute("""insert into Wo_Followers (following_id, follower_id, active) values (%s, %s, %s)""",
+                           values)
+            database.commit()
+    else:
+        for follower_id in followers:
+            values = [str(user_id), str(follower_id), '1']
+            cursor.execute("""insert into Wo_Followers (following_id, follower_id, active) values (%s, %s, %s)""",
+                           values)
+            database.commit()
 
 
 def updateWoFollowings(user_id, followings):
     database = connect2_0()
     cursor = database.cursor()
-    for following_id in followings:
-        values = [str(following_id), str(user_id), '1']
-        cursor.execute("""insert into Wo_Followers (following_id, follower_id, active) values (%s, %s, %s)""", values)
-        database.commit()
+    cursor.execute("select * from `Wo_Followers` where follower_id = " + str(user_id) + " order by id desc limit 1")
+    result = cursor.fetchall()
+    last_following_id = 0
+    for row in result:
+        last_following_id = row[1]
+    if last_following_id != 0:
+        index = followings.index(str(last_following_id))
+        for following_id in followings[index + 1:]:
+            values = [str(following_id), str(user_id), '1']
+            cursor.execute("""insert into Wo_Followers (following_id, follower_id, active) values (%s, %s, %s)""",
+                           values)
+            database.commit()
+    else:
+        for following_id in followings:
+            values = [str(following_id), str(user_id), '1']
+            cursor.execute("""insert into Wo_Followers (following_id, follower_id, active) values (%s, %s, %s)""",
+                           values)
+            database.commit()
 
 
 def getFollowing(user_id):
@@ -128,8 +184,8 @@ def getFollowing(user_id):
     for row in result:
         object_id = row[5]
         following.append(str(object_id))
-    updateWoFollowings(user_id, following)
     updateWoFollowingActivities(user_id, following)
+    updateWoFollowings(user_id, following)
 
     return following
 
@@ -146,8 +202,8 @@ def getFollowers(user_id):
         subject_id = row[3]
         followers.append(str(subject_id))
 
-    updateWoFollowers(user_id, followers)
     updateWoFollowerActivities(user_id, followers)
+    updateWoFollowers(user_id, followers)
 
     return followers
 
