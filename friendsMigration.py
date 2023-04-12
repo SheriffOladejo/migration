@@ -1,7 +1,5 @@
 from time import time
-
 import mysql.connector
-import requests
 import json
 
 
@@ -175,15 +173,22 @@ def updateWoFollowings(user_id, followings):
 def getFollowing(user_id):
     database = connect1_0()
     cursor = database.cursor()
-    cursor.execute(
-        "select * from engine4_activity_actions where subject_id = " + str(user_id) + " and type = 'friends'")
+    cursor.execute("select resource_id from engine4_user_membership where user_id = " + str(
+        user_id) + " and resource_approved = '1' and active = '1' and user_approved = '1'")
     result = cursor.fetchall()
 
     following = []
 
     for row in result:
-        object_id = row[5]
-        following.append(str(object_id))
+        following_id = row[0]
+        following.append(str(following_id))
+
+    cursor.execute(
+        "select user_id from `engine4_user_membership` where resource_id = " + str(user_id) + " and resource_approved = '0' and active = '0' and user_approved = '1'")
+    result = cursor.fetchall()
+    for row in result:
+        following_id = row[0]
+        following.append(str(following_id))
 
     updateWoFollowings(user_id, following)
     updateWoFollowingActivities(user_id, following)
@@ -194,14 +199,21 @@ def getFollowing(user_id):
 def getFollowers(user_id):
     database = connect1_0()
     cursor = database.cursor()
-    cursor.execute("select * from engine4_activity_actions where object_id = " + str(user_id) + " and type = 'friends'")
+    cursor.execute("select resource_id from engine4_user_membership where user_id = " + str(
+        user_id) + " and resource_approved = '1' and active = '1' and user_approved = '1'")
     result = cursor.fetchall()
 
     followers = []
 
     for row in result:
-        subject_id = row[3]
-        followers.append(str(subject_id))
+        follower_id = row[0]
+        followers.append(str(follower_id))
+
+    cursor.execute("select user_id from `engine4_user_membership` where resource_id = " + str(user_id) + " and resource_approved = '0' and active = '0' and user_approved = '1'")
+    result = cursor.fetchall()
+    for row in result:
+        follower_id = row[0]
+        followers.append(str(follower_id))
 
     updateWoFollowers(user_id, followers)
     updateWoFollowerActivities(user_id, followers)
