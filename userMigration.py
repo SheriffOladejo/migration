@@ -135,6 +135,7 @@ def migrateUsers():
         ]
         cursor.execute(query, values)
         database2.commit()
+    user_list = []
     migrateUsers()
 
 
