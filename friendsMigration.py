@@ -183,12 +183,12 @@ def getFollowing(user_id):
         following_id = row[0]
         following.append(str(following_id))
 
-    cursor.execute(
-        "select user_id from `engine4_user_membership` where resource_id = " + str(user_id) + " and resource_approved = '0' and active = '0' and user_approved = '1'")
-    result = cursor.fetchall()
-    for row in result:
-        following_id = row[0]
-        following.append(str(following_id))
+    # cursor.execute(
+    #     "select user_id from `engine4_user_membership` where resource_id = " + str(user_id) + " and resource_approved = '0' and active = '0' and user_approved = '1'")
+    # result = cursor.fetchall()
+    # for row in result:
+    #     following_id = row[0]
+    #     following.append(str(following_id))
 
     updateWoFollowings(user_id, following)
     updateWoFollowingActivities(user_id, following)
@@ -209,11 +209,11 @@ def getFollowers(user_id):
         follower_id = row[0]
         followers.append(str(follower_id))
 
-    cursor.execute("select user_id from `engine4_user_membership` where resource_id = " + str(user_id) + " and resource_approved = '0' and active = '0' and user_approved = '1'")
-    result = cursor.fetchall()
-    for row in result:
-        follower_id = row[0]
-        followers.append(str(follower_id))
+    # cursor.execute("select user_id from `engine4_user_membership` where resource_id = " + str(user_id) + " and resource_approved = '0' and active = '0' and user_approved = '1'")
+    # result = cursor.fetchall()
+    # for row in result:
+    #     follower_id = row[0]
+    #     followers.append(str(follower_id))
 
     updateWoFollowers(user_id, followers)
     updateWoFollowerActivities(user_id, followers)
