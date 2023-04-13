@@ -191,7 +191,7 @@ def getFollowing(user_id):
     #     following.append(str(following_id))
 
     updateWoFollowings(user_id, following)
-    updateWoFollowingActivities(user_id, following)
+    #updateWoFollowingActivities(user_id, following)
 
     return following
 
@@ -216,7 +216,7 @@ def getFollowers(user_id):
     #     followers.append(str(follower_id))
 
     updateWoFollowers(user_id, followers)
-    updateWoFollowerActivities(user_id, followers)
+    #updateWoFollowerActivities(user_id, followers)
 
     return followers
 
