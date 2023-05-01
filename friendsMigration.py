@@ -1,4 +1,3 @@
-from time import time
 import mysql.connector
 import json
 import time
@@ -90,14 +89,14 @@ def updateWoFollowerActivities(user_id, followers):
         if last_follower_id != 0:
             index = followers.index(str(last_follower_id))
             for follower_id in followers[index + 1:]:
-                values = [str(follower_id), str(user_id), 'following', str(time())]
+                values = [str(follower_id), str(user_id), 'following', str(time.time())]
                 cursor.execute(
                     """insert into Wo_Activities (user_id, follow_id, activity_type, time) values (%s, %s, %s, %s)""",
                     values)
                 database.commit()
         else:
             for follower_id in followers:
-                values = [str(follower_id), str(user_id), 'following', str(time())]
+                values = [str(follower_id), str(user_id), 'following', str(time.time())]
                 cursor.execute(
                     """insert into Wo_Activities (user_id, follow_id, activity_type, time) values (%s, %s, %s, %s)""",
                     values)
@@ -116,14 +115,14 @@ def updateWoFollowingActivities(user_id, followings):
         if last_follow_id != 0:
             index = followings.index(str(last_follow_id))
             for following_id in followings[index + 1:]:
-                values = [str(user_id), str(following_id), 'following', str(time())]
+                values = [str(user_id), str(following_id), 'following', str(time.time())]
                 cursor.execute(
                     """insert into Wo_Activities (user_id, follow_id, activity_type, time) values (%s, %s, %s, %s)""",
                     values)
                 database.commit()
         else:
             for following_id in followings:
-                values = [str(user_id), str(following_id), 'following', str(time())]
+                values = [str(user_id), str(following_id), 'following', str(time.time())]
                 cursor.execute(
                     """insert into Wo_Activities (user_id, follow_id, activity_type, time) values (%s, %s, %s, %s)""",
                     values)

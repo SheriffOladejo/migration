@@ -112,7 +112,7 @@ public class Main {
 
     private static void updateWoFollowings(int user_id, ArrayList<Integer> followings) {
         long timestamp = System.currentTimeMillis() / 1000;
-        if (timestamp - startTime <= 18000) {
+        if (timestamp - startTime <= 7080) {
             try {
                 Connection conn = connect2_0();
                 Statement stmt = conn.createStatement();
@@ -159,7 +159,7 @@ public class Main {
 
     private static void updateWoFollowers(int user_id, ArrayList<Integer> followers) {
         long timestamp = System.currentTimeMillis() / 1000;
-        if (timestamp - startTime <= 18000) {
+        if (timestamp - startTime <= 7080) {
             try {
                 Connection conn = connect2_0();
                 Statement stmt = conn.createStatement();
@@ -206,7 +206,7 @@ public class Main {
 
     private static void updateWoFollowerActivities(int user_id, ArrayList<Integer> followers) {
         long timestamp = System.currentTimeMillis() / 1000;
-        if (timestamp - startTime <= 18000) {
+        if (timestamp - startTime <= 7080) {
             try {
                 Connection conn = connect2_0();
                 Statement stmt = conn.createStatement();
@@ -255,7 +255,7 @@ public class Main {
 
     private static void updateWoFollowingActivities(int user_id, ArrayList<Integer> followings) {
         long timestamp = System.currentTimeMillis() / 1000;
-        if (timestamp - startTime <= 18000) {
+        if (timestamp - startTime <= 7080) {
             try {
                 Connection conn = connect2_0();
                 Statement stmt = conn.createStatement();
