@@ -11,10 +11,10 @@ from clicksend_client.rest import ApiException
 
 def connect2_0():
     database = mysql.connector.connect(
-        host='79.133.41.206',
-        user='admin_l5ERv',
-        database='admin_l5ERv',
-        passwd='irNdhZkzu8AU')
+        host='185.66.89.236',
+        user='gjftpbih',
+        database='gjftpbih_sms_app',
+        passwd='Ih805Lep1o')
     return database
 
 

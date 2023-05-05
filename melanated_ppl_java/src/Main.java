@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Main {
 
     // JDBC driver name and database URL
-    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+    static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
     static final String DB1 = "jdbc:mysql://79.133.41.206:3306/admin_melanatedpeo";
     // Database credentials
     static final String DB1_USER = "admin_melanatedpeo";
@@ -23,7 +23,7 @@ public class Main {
     private static Connection connect1_0() {
         Connection conn = null;
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName(JDBC_DRIVER);
             conn = DriverManager.getConnection(DB1, DB1_USER, DB1_PASS);
         }
         catch (Exception e ) {
@@ -35,7 +35,7 @@ public class Main {
     private static Connection connect2_0() {
         Connection conn = null;
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName(JDBC_DRIVER);
             conn = DriverManager.getConnection(DB2, DB2_USER, DB2_PASS);
         }
         catch (Exception e ) {
