@@ -88,7 +88,9 @@ def getData():
         "Content-Type": "application/json"
     }
 
-    resp = requests.post(base_url, data=json.dumps(list), headers=headers)
+    j = {"messages": list}
+
+    resp = requests.post(base_url, data=json.dumps(j), headers=headers)
     print(resp.text)
 
 getData()
