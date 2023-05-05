@@ -89,6 +89,6 @@ def getData():
     }
 
     resp = requests.post(base_url, data=json.dumps(list), headers=headers)
-    print(resp)
+    print(resp.text)
 
 getData()
