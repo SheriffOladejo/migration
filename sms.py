@@ -39,11 +39,14 @@ def _getData():
         recipient_number = m[4]
         sender = m[6]
 
+        print(sender)
+
         if timestamp / 1000 <= time.time():
             sms_message = SmsMessage(source="php",
                                      body=text,
                                      to=recipient_number,
-                                     _from=sender)
+                                     _from=sender,
+                                     )
             list.append(sms_message)
 
     sms_messages = clicksend_client.SmsMessageCollection(messages=list)
@@ -66,9 +69,10 @@ def getData():
         text = m[1]
         timestamp = int(m[2])
         recipient_number = m[4]
+        sender = m[6]
 
         if timestamp / 1000 <= time.time():
-            _json = {"source": "sdk", "body": text, "to": recipient_number}
+            _json = {"source": "sdk", "body": text, "to": recipient_number, "from": sender}
             list.append(_json)
         print(str(list))
 
@@ -80,4 +84,4 @@ def getData():
     resp = requests.post(base_url, data=json.dumps(list), headers=headers)
     print(resp)
 
-_getData()
+getData()
