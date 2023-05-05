@@ -3,6 +3,7 @@ from __future__ import print_function
 import mysql.connector
 import json
 import time
+import base64
 import requests
 
 import clicksend_client
@@ -59,6 +60,12 @@ def _getData():
         print("Exception when calling SMSApi->sms_send_post: %s\n" % e)
 
 def getData():
+    sample_string = "vanunalarisa@gmail.com:3F00AD78-3F5B-EAF2-6537-8E8A9AA124AD"
+    sample_string_bytes = sample_string.encode("ascii")
+
+    base64_bytes = base64.b64encode(sample_string_bytes)
+    base64_string = base64_bytes.decode("ascii")
+
     list = []
     base_url = "https://rest.clicksend.com/v3/sms/send"
     database = connect2_0()
@@ -77,7 +84,7 @@ def getData():
         print(str(list))
 
     headers = {
-        "Authorization": "Basic 3F00AD78-3F5B-EAF2-6537-8E8A9AA124AD",
+        "Authorization": "Basic " + base64_string,
         "Content-Type": "application/json"
     }
 
