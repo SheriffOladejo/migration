@@ -73,6 +73,7 @@ def getData():
     cursor.execute("select * from t_app where sent = 'false'")
     messages = cursor.fetchall()
     for m in messages:
+        id = m[0]
         text = m[1]
         timestamp = int(m[2])
         recipient_number = m[4]
@@ -82,6 +83,8 @@ def getData():
             _json = {"source": "sdk", "body": text, "to": recipient_number, "from": sender}
             list.append(_json)
         print(str(list))
+
+        cursor.execute("update t_app set sent = 'true' where id = " + str(id))
 
     headers = {
         "Authorization": "Basic " + base64_string,
