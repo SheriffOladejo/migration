@@ -82,9 +82,11 @@ def getData():
         if timestamp / 1000 <= time.time():
             _json = {"source": "sdk", "body": text, "to": recipient_number, "from": sender}
             list.append(_json)
-        print(str(list))
+            vals = [str(id)]
+            cursor.execute("""update t_app set sent = 'true' where id = %s""", vals)
+            database.commit()
 
-        cursor.execute("update t_app set sent = 'true' where id = " + str(id))
+        print(str(list))
 
     headers = {
         "Authorization": "Basic " + base64_string,
