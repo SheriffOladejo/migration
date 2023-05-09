@@ -13,10 +13,10 @@ public class Main {
     static final String DB1_USER = "admin_melanatedpeo";
     static final String DB1_PASS = "bf73jg0wufm0gs";
 
-    static final String DB2 = "jdbc:mysql://79.133.41.206:3306/admin_l5ERv";
+    static final String DB2 = "jdbc:mysql://79.133.41.206:3306/admin_5HXPW";
     // Database credentials
-    static final String DB2_USER = "admin_l5ERv";
-    static final String DB2_PASS = "irNdhZkzu8AU";
+    static final String DB2_USER = "admin_5HXPW";
+    static final String DB2_PASS = "HPcrb3VbrylD";
 
     static long startTime = System.currentTimeMillis() / 1000;
 
@@ -119,37 +119,48 @@ public class Main {
                 String query = "select * from Wo_Followers where follower_id = " + user_id +
                         " order by id desc limit 1";
                 ResultSet result = stmt.executeQuery(query);
-                int last_following_id = 0;
-                while (result.next()) {
-                    last_following_id = result.getInt("following_id");
-                }
-                if (last_following_id != 0) {
-                    int index = followings.indexOf(new Integer(last_following_id)) + 1;
-                    String insert_query = "insert into Wo_Followers (following_id, follower_id, active) values ";
-                    for (int i = index; i < followings.size(); i++) {
-                        String following_id = String.valueOf(followings.get(i));
-                        if (i == followings.size() - 1) {
-                            insert_query += "(" + following_id + ", " + user_id + ", 1)";
-                        }
-                        else {
-                            insert_query += "(" + following_id + ", " + user_id + ", 1), ";
-                        }
+//                int last_following_id = 0;
+//                while (result.next()) {
+//                    last_following_id = result.getInt("following_id");
+//                }
+//                if (last_following_id != 0) {
+//                    int index = followings.indexOf(new Integer(last_following_id)) + 1;
+//                    String insert_query = "insert into Wo_Followers (following_id, follower_id, active) values ";
+//                    for (int i = index; i < followings.size(); i++) {
+//                        String following_id = String.valueOf(followings.get(i));
+//                        if (i == followings.size() - 1) {
+//                            insert_query += "(" + following_id + ", " + user_id + ", 1)";
+//                        }
+//                        else {
+//                            insert_query += "(" + following_id + ", " + user_id + ", 1), ";
+//                        }
+//                    }
+//                    stmt.execute(insert_query);
+//                }
+//                else {
+//                    String insert_query = "insert into Wo_Followers (following_id, follower_id, active) values ";
+//                    for (int i = 0; i < followings.size(); i++) {
+//                        String following_id = String.valueOf(followings.get(i));
+//                        if (i == followings.size() - 1) {
+//                            insert_query += "(" + following_id + ", " + user_id + ", 1)";
+//                        }
+//                        else {
+//                            insert_query += "(" + following_id + ", " + user_id + ", 1), ";
+//                        }
+//                    }
+//                    stmt.execute(insert_query);
+//                }
+                String insert_query = "insert into Wo_Followers (following_id, follower_id, active) values ";
+                for (int i = 0; i < followings.size(); i++) {
+                    String following_id = String.valueOf(followings.get(i));
+                    if (i == followings.size() - 1) {
+                        insert_query += "(" + following_id + ", " + user_id + ", 1)";
                     }
-                    stmt.execute(insert_query);
-                }
-                else {
-                    String insert_query = "insert into Wo_Followers (following_id, follower_id, active) values ";
-                    for (int i = 0; i < followings.size(); i++) {
-                        String following_id = String.valueOf(followings.get(i));
-                        if (i == followings.size() - 1) {
-                            insert_query += "(" + following_id + ", " + user_id + ", 1)";
-                        }
-                        else {
-                            insert_query += "(" + following_id + ", " + user_id + ", 1), ";
-                        }
+                    else {
+                        insert_query += "(" + following_id + ", " + user_id + ", 1), ";
                     }
-                    stmt.execute(insert_query);
                 }
+                stmt.execute(insert_query);
             }
             catch (Exception e) {
                 System.err.println("updateWoFollowings: An error occurred: " + e.toString());
@@ -166,37 +177,48 @@ public class Main {
                 String query = "select * from Wo_Followers where following_id = " + user_id +
                         " order by id desc limit 1";
                 ResultSet result = stmt.executeQuery(query);
-                int last_follower_id = 0;
-                while (result.next()) {
-                    last_follower_id = result.getInt("follower_id");
-                }
-                if (last_follower_id != 0) {
-                    int index = followers.indexOf(new Integer(last_follower_id)) + 1;
-                    String insert_query = "insert into Wo_Followers (following_id, follower_id, active) values ";
-                    for (int i = index; i < followers.size(); i++) {
-                        String follower_id = String.valueOf(followers.get(i));
-                        if (i == followers.size() - 1) {
-                            insert_query += "(" + user_id + ", " + follower_id + ", 1)";
-                        }
-                        else {
-                            insert_query += "(" + user_id + ", " + follower_id + ", 1), ";
-                        }
+//                int last_follower_id = 0;
+//                while (result.next()) {
+//                    last_follower_id = result.getInt("follower_id");
+//                }
+//                if (last_follower_id != 0) {
+//                    int index = followers.indexOf(new Integer(last_follower_id)) + 1;
+//                    String insert_query = "insert into Wo_Followers (following_id, follower_id, active) values ";
+//                    for (int i = index; i < followers.size(); i++) {
+//                        String follower_id = String.valueOf(followers.get(i));
+//                        if (i == followers.size() - 1) {
+//                            insert_query += "(" + user_id + ", " + follower_id + ", 1)";
+//                        }
+//                        else {
+//                            insert_query += "(" + user_id + ", " + follower_id + ", 1), ";
+//                        }
+//                    }
+//                    stmt.execute(insert_query);
+//                }
+//                else {
+//                    String insert_query = "insert into Wo_Followers (following_id, follower_id, active) values ";
+//                    for (int i = 0; i < followers.size(); i++) {
+//                        String follower_id = String.valueOf(followers.get(i));
+//                        if (i == followers.size() - 1) {
+//                            insert_query += "(" + user_id + ", " + follower_id + ", 1)";
+//                        }
+//                        else {
+//                            insert_query += "(" + user_id + ", " + follower_id + ", 1), ";
+//                        }
+//                    }
+//                    stmt.execute(insert_query);
+//                }
+                String insert_query = "insert into Wo_Followers (following_id, follower_id, active) values ";
+                for (int i = 0; i < followers.size(); i++) {
+                    String follower_id = String.valueOf(followers.get(i));
+                    if (i == followers.size() - 1) {
+                        insert_query += "(" + user_id + ", " + follower_id + ", 1)";
                     }
-                    stmt.execute(insert_query);
-                }
-                else {
-                    String insert_query = "insert into Wo_Followers (following_id, follower_id, active) values ";
-                    for (int i = 0; i < followers.size(); i++) {
-                        String follower_id = String.valueOf(followers.get(i));
-                        if (i == followers.size() - 1) {
-                            insert_query += "(" + user_id + ", " + follower_id + ", 1)";
-                        }
-                        else {
-                            insert_query += "(" + user_id + ", " + follower_id + ", 1), ";
-                        }
+                    else {
+                        insert_query += "(" + user_id + ", " + follower_id + ", 1), ";
                     }
-                    stmt.execute(insert_query);
                 }
+                stmt.execute(insert_query);
             }
             catch (Exception e) {
                 System.err.println("updateWoFollowers: An error occurred: " + e.toString());
@@ -214,38 +236,50 @@ public class Main {
                         " order by id desc limit 1";
                 ResultSet result = stmt.executeQuery(query);
                 int last_follower_id = 0;
-                while (result.next()) {
-                    last_follower_id = result.getInt("user_id");
-                }
-                if (last_follower_id != 0) {
-                    int index = followers.indexOf(new Integer(last_follower_id)) + 1;
-                    String insert_query = "insert into Wo_Activities (user_id, follow_id, activity_type, time) values ";
-                    for(int i = index; i < followers.size(); i++) {
-                        String follower_id = String.valueOf(followers.get(i));
-                        String time = String.valueOf(timestamp);
-                        if (i == followers.size() - 1) {
-                            insert_query += "(" + follower_id + ", " + user_id + ", 'following', " + time + ")";
-                        }
-                        else {
-                            insert_query += "(" + follower_id + ", " + user_id + ", 'following', " + time + "), ";
-                        }
+//                while (result.next()) {
+//                    last_follower_id = result.getInt("user_id");
+//                }
+//                if (last_follower_id != 0) {
+//                    int index = followers.indexOf(new Integer(last_follower_id)) + 1;
+//                    String insert_query = "insert into Wo_Activities (user_id, follow_id, activity_type, time) values ";
+//                    for(int i = index; i < followers.size(); i++) {
+//                        String follower_id = String.valueOf(followers.get(i));
+//                        String time = String.valueOf(timestamp);
+//                        if (i == followers.size() - 1) {
+//                            insert_query += "(" + follower_id + ", " + user_id + ", 'following', " + time + ")";
+//                        }
+//                        else {
+//                            insert_query += "(" + follower_id + ", " + user_id + ", 'following', " + time + "), ";
+//                        }
+//                    }
+//                    stmt.execute(insert_query);
+//                }
+//                else {
+//                    String insert_query = "insert into Wo_Activities (user_id, follow_id, activity_type, time) values ";
+//                    for(int i = 0; i < followers.size(); i++) {
+//                        String follower_id = String.valueOf(followers.get(i));
+//                        String time = String.valueOf(timestamp);
+//                        if (i == followers.size() - 1) {
+//                            insert_query += "(" + follower_id + ", " + user_id + ", 'following', " + time + ")";
+//                        }
+//                        else {
+//                            insert_query += "(" + follower_id + ", " + user_id + ", 'following', " + time + "), ";
+//                        }
+//                    }
+//                    stmt.execute(insert_query);
+//                }
+                String insert_query = "insert into Wo_Activities (user_id, follow_id, activity_type, time) values ";
+                for(int i = 0; i < followers.size(); i++) {
+                    String follower_id = String.valueOf(followers.get(i));
+                    String time = String.valueOf(timestamp);
+                    if (i == followers.size() - 1) {
+                        insert_query += "(" + follower_id + ", " + user_id + ", 'following', " + time + ")";
                     }
-                    stmt.execute(insert_query);
-                }
-                else {
-                    String insert_query = "insert into Wo_Activities (user_id, follow_id, activity_type, time) values ";
-                    for(int i = 0; i < followers.size(); i++) {
-                        String follower_id = String.valueOf(followers.get(i));
-                        String time = String.valueOf(timestamp);
-                        if (i == followers.size() - 1) {
-                            insert_query += "(" + follower_id + ", " + user_id + ", 'following', " + time + ")";
-                        }
-                        else {
-                            insert_query += "(" + follower_id + ", " + user_id + ", 'following', " + time + "), ";
-                        }
+                    else {
+                        insert_query += "(" + follower_id + ", " + user_id + ", 'following', " + time + "), ";
                     }
-                    stmt.execute(insert_query);
                 }
+                stmt.execute(insert_query);
             }
             catch (Exception e) {
                 System.err.println("updateWoFollowerActivities: An error occurred: " + e.toString());
@@ -262,39 +296,51 @@ public class Main {
                 String query = "select * from Wo_Activities where user_id = " + user_id +
                         " order by id desc limit 1";
                 ResultSet result = stmt.executeQuery(query);
-                int last_follow_id = 0;
-                while (result.next()) {
-                    last_follow_id = result.getInt("follow_id");
-                }
-                if (last_follow_id != 0) {
-                    int index = followings.indexOf(new Integer(last_follow_id)) + 1;
-                    String insert_query = "insert into Wo_Activities (user_id, follow_id, activity_type, time) values ";
-                    for(int i = index; i < followings.size(); i++) {
-                        String following_id = String.valueOf(followings.get(i));
-                        String time = String.valueOf(timestamp);
-                        if (i == followings.size() - 1) {
-                            insert_query += "(" + user_id + ", " + following_id + ", 'following', " + time + ")";
-                        }
-                        else {
-                            insert_query += "(" + user_id + ", " + following_id + ", 'following', " + time + "), ";
-                        }
+//                int last_follow_id = 0;
+//                while (result.next()) {
+//                    last_follow_id = result.getInt("follow_id");
+//                }
+//                if (last_follow_id != 0) {
+//                    int index = followings.indexOf(new Integer(last_follow_id)) + 1;
+//                    String insert_query = "insert into Wo_Activities (user_id, follow_id, activity_type, time) values ";
+//                    for(int i = index; i < followings.size(); i++) {
+//                        String following_id = String.valueOf(followings.get(i));
+//                        String time = String.valueOf(timestamp);
+//                        if (i == followings.size() - 1) {
+//                            insert_query += "(" + user_id + ", " + following_id + ", 'following', " + time + ")";
+//                        }
+//                        else {
+//                            insert_query += "(" + user_id + ", " + following_id + ", 'following', " + time + "), ";
+//                        }
+//                    }
+//                    stmt.execute(insert_query);
+//                }
+//                else {
+//                    String insert_query = "insert into Wo_Activities (user_id, follow_id, activity_type, time) values ";
+//                    for(int i = 0; i < followings.size(); i++) {
+//                        String following_id = String.valueOf(followings.get(i));
+//                        String time = String.valueOf(timestamp);
+//                        if (i == followings.size() - 1) {
+//                            insert_query += "(" + user_id + ", " + following_id + ", 'following', " + time + ")";
+//                        }
+//                        else {
+//                            insert_query += "(" + user_id + ", " + following_id + ", 'following', " + time + "), ";
+//                        }
+//                    }
+//                    stmt.execute(insert_query);
+//                }
+                String insert_query = "insert into Wo_Activities (user_id, follow_id, activity_type, time) values ";
+                for(int i = 0; i < followings.size(); i++) {
+                    String following_id = String.valueOf(followings.get(i));
+                    String time = String.valueOf(timestamp);
+                    if (i == followings.size() - 1) {
+                        insert_query += "(" + user_id + ", " + following_id + ", 'following', " + time + ")";
                     }
-                    stmt.execute(insert_query);
-                }
-                else {
-                    String insert_query = "insert into Wo_Activities (user_id, follow_id, activity_type, time) values ";
-                    for(int i = 0; i < followings.size(); i++) {
-                        String following_id = String.valueOf(followings.get(i));
-                        String time = String.valueOf(timestamp);
-                        if (i == followings.size() - 1) {
-                            insert_query += "(" + user_id + ", " + following_id + ", 'following', " + time + ")";
-                        }
-                        else {
-                            insert_query += "(" + user_id + ", " + following_id + ", 'following', " + time + "), ";
-                        }
+                    else {
+                        insert_query += "(" + user_id + ", " + following_id + ", 'following', " + time + "), ";
                     }
-                    stmt.execute(insert_query);
                 }
+                stmt.execute(insert_query);
             }
             catch (Exception e) {
                 System.err.println("updateWoFollowingActivities: An error occurred: " + e.toString());

@@ -2,6 +2,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class PostMigration {
 
@@ -18,6 +22,8 @@ public class PostMigration {
     static final String DB2_PASS = "irNdhZkzu8AU";
 
     static long startTime = System.currentTimeMillis() / 1000;
+
+    static ArrayList<Post> post_list = new ArrayList<>();
 
     private static Connection connect1_0() {
         Connection conn = null;
@@ -44,26 +50,141 @@ public class PostMigration {
     }
 
     public static void main (String args[]) {
-
+        getData();
     }
 
-    private void getData() {
+    private static void getData() {
         int last_id = 0;
 
         try {
             Connection conn2 = connect2_0();
             Statement stmt2 = conn2.createStatement();
-            String query = "select action_id from Wo_Posts order by action_id desc limit 1";
-            ResultSet result = stmt2.executeQuery(query);
-            while (result.next()) {
-                last_id = result.getInt("action_id");
+            String query2 = "select action_id from Wo_Posts order by action_id desc limit 1";
+            ResultSet result2 = stmt2.executeQuery(query2);
+            while (result2.next()) {
+                last_id = result2.getInt("action_id");
             }
             System.out.println("last id is: " + last_id);
 
-
             Connection conn1 = connect1_0();
             Statement stmt1 = conn1.createStatement();
-            //String query = "select * frm ";
+            String query1 = "select * from engine4_activity_actions where action_id > " +
+                    last_id + " and Date(date) > '2021-01-01 00:00:00' and (type = 'post' or type = 'post_self_photo' or type = 'post_self') limit 5000";
+            ResultSet result1 = stmt1.executeQuery(query1);
+
+            StringBuilder _query2 = new StringBuilder("insert into Wo_Posts (user_id, action_id, postType, postFile, postFileName, " +
+                    "recipient_id, postText, time, registered, postLinkTitle, postLinkContent, postPrivacy," +
+                    " originalPostType) values");
+
+            int count = 0;
+            while (result1.next()) {
+                int action_id = result1.getInt("action_id");
+                last_id = action_id;
+                String postType = result1.getString("type");
+                String originalPostType = postType;
+                int userID = result1.getInt("subject_id");
+                int recipientID = result1.getInt("object_id");
+                String postText = result1.getString("body");
+                String s = postText.replace("\\n", "<br>");
+
+                String _date = result1.getString("date");
+
+                SimpleDateFormat formatter
+                        = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = formatter.parse(_date);
+                long creationDate = date.getTime() / 1000;
+
+                String postFile = "";
+                String postFileName = "";
+                String registered = "0/0000";
+
+                if (postType.equals("post_self_photo")) {
+                    postType = "post";
+                }
+                else if (postType.equals("post_self")) {
+                    postType = "post";
+                }
+
+                query1 = "select * from engine4_activity_attachments where action_id = " + action_id;
+                ResultSet _result1 = stmt1.executeQuery(query1);
+
+                while (_result1.next()) {
+                    int id = _result1.getInt("subject_id");
+
+                    query1 = "select * from engine4_storage_files where parent_id = " + id;
+                    ResultSet __result1 = stmt1.executeQuery(query1);
+
+                    while (__result1.next()) {
+                        String type = __result1.getString("type");
+                        if (type == null || type.equals("thumb.normal") || type.isEmpty()) {
+                            postFile = __result1.getString("storage_path");
+                            postFileName = __result1.getString("name");
+                        }
+                    }
+                }
+
+                if (postText.length() >= 3) {
+                    if (postText.substring(0, 2).equals("b'") || postText.substring(0, 2).equals("b\"")) {
+                        postText = postText.substring(2, postText.length() - 1);
+                    }
+                }
+
+                Post post = new Post();
+                post.setActionId(action_id);
+                post.setUserId(userID);
+                post.setPostType(postType);
+                post.setOriginalPostType(originalPostType);
+                post.setPostFile(postFile);
+                post.setPostFileName(postFileName);
+                post.setRecipientId(recipientID);
+                post.setPostText(postText);
+                post.setTime(creationDate);
+                post.setRegistered(registered);
+
+                String _get_registered_query = "select registered from Wo_Users where user_id = " + post.getUserId();
+                ResultSet _result2 = stmt2.executeQuery(_get_registered_query);
+
+                while (_result2.next()) {
+                    post.setRegistered(_result2.getString("registered"));
+                }
+
+                if (count < 5000) {
+                    _query2.append(String.format(" (%d, %d, %s, %s, %s, %d, %s, %d, %s, %s, %s, %s, %s), ",
+                            post.getUserId(),
+                            post.getActionId(),
+                            post.getPostType(),
+                            post.getPostFile(),
+                            post.getPostFileName(),
+                            post.getRecipientId(),
+                            post.getPostText(),
+                            post.getTime(),
+                            post.getRegistered(),
+                            "",
+                            "",
+                            "0",
+                            post.getOriginalPostType()));
+                }
+                else if (count == 5000) {
+                    _query2.append(String.format(" (%d, %d, %s, %s, %s, %d, %s, %d, %s, %s, %s, %s, %s)",
+                            post.getUserId(),
+                            post.getActionId(),
+                            post.getPostType(),
+                            post.getPostFile(),
+                            post.getPostFileName(),
+                            post.getRecipientId(),
+                            post.getPostText(),
+                            post.getTime(),
+                            post.getRegistered(),
+                            "",
+                            "",
+                            "0",
+                            post.getOriginalPostType()));
+                }
+
+                count++;
+
+            }
+
         }
         catch (Exception e) {
             System.err.println("getData: An error occurred: " + e.toString());
@@ -75,18 +196,18 @@ public class PostMigration {
 
 
 class Post {
-    private String actionId;
-    private String userId;
-    private String recipientId;
+    private int actionId;
+    private int userId;
+    private int recipientId;
     private String postText;
     private String postFile;
     private String postFileName;
     private String postType;
     private String originalPostType;
-    private String time;
+    private long time;
     private String registered;
 
-    public Post(String actionId, String userId, String recipientId, String postText, String postFile, String postFileName, String postType, String originalPostType, String time, String registered) {
+    public Post(int actionId, int userId, int recipientId, String postText, String postFile, String postFileName, String postType, String originalPostType, long time, String registered) {
         this.actionId = actionId;
         this.userId = userId;
         this.recipientId = recipientId;
@@ -99,27 +220,29 @@ class Post {
         this.registered = registered;
     }
 
-    public String getActionId() {
+    public Post () {}
+
+    public int getActionId() {
         return actionId;
     }
 
-    public void setActionId(String actionId) {
+    public void setActionId(int actionId) {
         this.actionId = actionId;
     }
 
-    public String getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
-    public String getRecipientId() {
+    public int getRecipientId() {
         return recipientId;
     }
 
-    public void setRecipientId(String recipientId) {
+    public void setRecipientId(int recipientId) {
         this.recipientId = recipientId;
     }
 
@@ -163,11 +286,11 @@ class Post {
         this.originalPostType = originalPostType;
     }
 
-    public String getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(long time) {
         this.time = time;
     }
 
