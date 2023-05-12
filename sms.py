@@ -60,14 +60,8 @@ def _getData():
         print("Exception when calling SMSApi->sms_send_post: %s\n" % e)
 
 def getData():
-    sample_string = "vanunalarisa@gmail.com:3F00AD78-3F5B-EAF2-6537-8E8A9AA124AD"
-    sample_string_bytes = sample_string.encode("ascii")
 
-    base64_bytes = base64.b64encode(sample_string_bytes)
-    base64_string = base64_bytes.decode("ascii")
-
-    list = []
-    base_url = "https://rest.clicksend.com/v3/sms/send"
+    base_url = "https://api.ng.termii.com/api/sms/send"
     database = connect2_0()
     cursor = database.cursor()
     cursor.execute("select * from t_app where sent = 'false'")
@@ -80,22 +74,11 @@ def getData():
         sender = m[6]
 
         if timestamp / 1000 <= time.time():
-            _json = {"source": "sdk", "body": text, "to": recipient_number, "from": sender}
-            list.append(_json)
+            params = "?sms="+text+"&to="+recipient_number+"&api_key=TLAq4rAdxyxEhxPFy0OLQkhKT05lfvfNGCfp0ibsxlJysfuWbXgsw6iuEvl63I&type=plain&from=Guenther&channel=generic"
+            base_url += params
+            resp = requests.post(base_url)
             vals = [str(id)]
             cursor.execute("""update t_app set sent = 'true' where id = %s""", vals)
             database.commit()
-
-        print(str(list))
-
-    headers = {
-        "Authorization": "Basic " + base64_string,
-        "Content-Type": "application/json"
-    }
-
-    j = {"messages": list}
-
-    resp = requests.post(base_url, data=json.dumps(j), headers=headers)
-    print(resp.text)
 
 getData()
