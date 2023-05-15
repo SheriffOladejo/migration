@@ -46,22 +46,24 @@ public class Main {
 
     private static void getData() {
         int last_id = 0;
+        int user_id = -1;
         Connection conn = connect2_0();
         try {
             Statement stmt = conn.createStatement();
-            String query = "select user_id from Wo_Users where friends_copied = 1 order by user_id desc limit 1";
+            String query = "select user_id from Wo_Users where friends_copied = 0 order by user_id asc limit 1";
             ResultSet result = stmt.executeQuery(query);
             while (result.next()) {
                 last_id = result.getInt("user_id");
             }
+
             System.out.println("last id is: " + last_id);
 
             Connection conn1 = connect1_0();
             Statement stmt1 = conn1.createStatement();
-            String query1 = "select * from engine4_users where user_id > " + last_id + " limit 5000";
+            String query1 = "select * from engine4_users where user_id >= " + last_id + " limit 5000";
             ResultSet result1 = stmt1.executeQuery(query1);
             while (result1.next()) {
-                int user_id = result1.getInt("user_id");
+                user_id = result1.getInt("user_id");
                 last_id = user_id;
 
                 ArrayList<Integer> _followers = getFollowers(user_id);
@@ -107,6 +109,32 @@ public class Main {
         }
         catch (Exception e) {
             System.err.println("getData: An error occurred: " + e.toString());
+            updateFriendsCopied(user_id);
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+        finally {
+            getData();
+        }
+    }
+
+    private static void updateFriendsCopied(int user_id) {
+        try (Connection conn = connect2_0()) {
+            String query3 = """
+                            update Wo_Users set friends_copied = ? where user_id = ?
+                            """;
+            PreparedStatement statement;
+            statement = conn.prepareStatement(query3);
+            statement.setInt(1, -1);
+            statement.setInt(2, user_id);
+            statement.executeUpdate();
+            System.out.println("Skipping user id: " + user_id);
+        }
+        catch (Exception e) {
+            System.err.println("updateFriendsCopied: An error occurred: " + e.toString());
         }
     }
 
@@ -301,7 +329,6 @@ public class Main {
             }
         }
     }
-
 
     private static ArrayList<Integer> getFollowing(int user_id) {
         ArrayList<Integer> following = new ArrayList<>();
