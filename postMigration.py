@@ -42,9 +42,9 @@ def connect1_0():
 def connect2_0():
     database = mysql.connector.connect(
         host='79.133.41.206',
-        user='admin_l5ERv',
-        database='admin_l5ERv',
-        passwd='irNdhZkzu8AU')
+        user='admin_MP1.0',
+        database='admin_MP1.0',
+        passwd='ebLkIGzui0AnpjUW')
     return database
 
 
@@ -182,5 +182,6 @@ def getPostData():
             database2.commit()
 
         print("Last actionID: " + str(last_id))
+
 
 getPostData()
